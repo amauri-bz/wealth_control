@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Investimentos</title>
+    <!-- <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" /> -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body style="background: rgb(231, 231, 231);">
+
+    <div class="w3-container w3-teal">
+        <h2>Controle de Investimentos:</h2>
+    </div>
+    </br>
+
+    <!-------------------------------------------------------------------------------------------------------->
+    <input type="month" id="global_date" class="w3-margin" min="2010-01">
+
+    <div class="w3-row-padding">
+        <div class="w3-col s4">
+            <div class="w3-panel w3-teal">
+                <h3 class="w3-margin">Proporcao por Classe:</h3>
+                <div class="w3-panel w3-light-gray">
+                    <canvas id="pie_chart_carteira" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="w3-col s4">
+            <div class="w3-panel w3-teal">
+                <h3 class="w3-margin">Historico da Carteira</h3>
+                <div class="w3-panel w3-light-gray">
+                    <canvas id="line_chart_carteira" width="300" height="300"></canvas>
+                </div>
+            </div>
+         </div>
+        <div class="w3-col s4">
+            <div class="w3-panel w3-teal">
+                <h3 class="w3-margin">Historico de Proventos</h3>
+                <div class="w3-panel w3-light-gray">
+                    <canvas id="line_provento_carteira" width="300" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="w3-panel w3-teal w3-margin">
+        <h3 class="w3-margin">Carteira Atual:</h3>
+        <div class="w3-panel w3-light-gray">
+	        <table id= "carteira" class="w3-table-all w3-hoverable w3-centered"></table>
+        </div>
+    </div>
+    <!-------------------------------------------------------------------------------------------------------->
+    </br></br>
+    <div class="w3-bar w3-teal w3-margin-bottom w3-margin-top">
+        <button class="w3-bar-item w3-button w3-large" onclick="utils.tab_ctrl('show_acoes')">Acoes</button>
+        <button class="w3-bar-item w3-button w3-large" onclick="utils.tab_ctrl('show_fiis')">FIIs</button>
+        <button class="w3-bar-item w3-button w3-large" onclick="utils.tab_ctrl('show_stocks')">Inv Exterior</button>
+        <button class="w3-bar-item w3-button w3-large" onclick="utils.tab_ctrl('show_td')">Tesouro Direto</button>
+        <button class="w3-bar-item w3-button w3-large" onclick="utils.tab_ctrl('show_poup')">Poupanca</button>
+        <button class="w3-bar-item w3-button w3-large" onclick="utils.tab_ctrl('show_cc')">Conta Corrente</button>
+        <button class="w3-bar-item w3-button w3-large" onclick="utils.tab_ctrl('show_provento')">Proventos</button>
+    </div>
+
+    <div id="show_acoes" class="w3-panel w3-teal inv w3-margin">
+        <h3 class="w3-margin">Ações:</h3>
+            <div class="w3-panel w3-light-gray">
+
+            <div class="w3-row-padding">
+                <div class="w3-col s3">
+                    <canvas id="pie_chart_acoes" width="300" height="300"></canvas>
+                </div>
+                <div class="w3-col s9">
+                    <button onclick="utils.accordions('show_add_acoes')" class="w3-btn w3-block w3-teal w3-left-align w3-margin-top">Adicionar/Editar</button>
+                    <div id="show_add_acoes" class="w3-container w3-hide">
+                        <form class="w3-container" onsubmit ="return false">
+                            <input id="id_acoes" class="w3-hide" type="text">
+
+                            <table class="w3-table">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                            </tr>
+                            <tr>
+                                <td><input id="name_acoes" class="w3-input w3-border" type="text"></td>
+                                <td><input id="num_acoes" class="w3-input w3-border" type="text"></td>
+                                <td><input id="val_acoes" class="w3-input w3-border" type="text"></td>
+                            </tr>
+                            </table>
+
+                            <button id="add_acoes" class="w3-button w3-teal w3-margin-bottom">Salvar</button>
+                            <button id="clear_acoes" class="w3-button w3-teal w3-margin-bottom">Limpar</button>
+                        </form>
+                    </div>
+
+                    <table id= "acoes" class="w3-table-all w3-hoverable w3-centered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-------------------------------------------------------------------------------------------------------->
+
+    <div id="show_fiis" class="w3-panel w3-teal inv w3-margin">
+
+        <h3 class="w3-margin">Fundos Imobiliarios:</h3>
+        <div class="w3-panel w3-light-gray">
+
+            <div class="w3-row-padding">
+                <div class="w3-col s3">
+                    <canvas id="pie_chart_fiis" width="300" height="300"></canvas>
+                </div>
+                <div class="w3-col s9">
+                    <button onclick="utils.accordions('show_add_fiis')" class="w3-btn w3-block w3-teal w3-left-align w3-margin-top">Adicionar/Editar</button>
+                    <div id="show_add_fiis" class="w3-container w3-hide">
+                        <form class="w3-container" onsubmit ="return false">
+                            <input id="id_fiis" class="w3-hide" type="text">
+
+                            <table class="w3-table">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                            </tr>
+                            <tr>
+                                <td><input id="name_fiis" class="w3-input w3-border" type="text"></td>
+                                <td><input id="num_fiis" class="w3-input w3-border" type="text"></td>
+                                <td><input id="val_fiis" class="w3-input w3-border" type="text"></td>
+                            </tr>
+                            </table>
+
+                            <button id="add_fiis" class="w3-button w3-teal w3-margin-bottom">Salvar</button>
+                            <button id="clear_fiis" class="w3-button w3-teal w3-margin-bottom">Limpar</button>
+                    </form>
+                    </div>
+
+                    <table id= "fiis" class="w3-table-all w3-hoverable w3-centered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-------------------------------------------------------------------------------------------------------->
+    <div id="show_stocks" class="w3-panel w3-teal inv w3-margin">
+
+        <h3 class="w3-margin">Investimentos no Exterior:</h3>
+        <div class="w3-panel w3-light-gray">
+
+            <div class="w3-row-padding">
+                <div class="w3-col s3">
+                    <canvas id="pie_chart_stocks" width="300" height="300"></canvas>
+                </div>
+                <div class="w3-col s9">
+                    <button onclick="utils.accordions('show_add_stocks')" class="w3-btn w3-block w3-teal w3-left-align w3-margin-top">Adicionar/Editar</button>
+                    <div id="show_add_stocks" class="w3-container w3-hide">
+                        <form class="w3-container" onsubmit ="return false">
+                            <input id="id_stocks" class="w3-hide" type="text">
+
+                            <table class="w3-table">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                            </tr>
+                            <tr>
+                                <td><input id="name_stocks" class="w3-input w3-border" type="text"></td>
+                                <td><input id="num_stocks" class="w3-input w3-border" type="text"></td>
+                                <td><input id="val_stocks" class="w3-input w3-border" type="text"></td>
+                            </tr>
+                            </table>
+
+                            <button id="add_stocks" class="w3-button w3-teal w3-margin-bottom">Salvar</button>
+                            <button id="clear_stocks" class="w3-button w3-teal w3-margin-bottom">Limpar</button>
+                        </form>
+                    </div>
+
+                    <table id= "stocks" class="w3-table-all w3-hoverable w3-centered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-------------------------------------------------------------------------------------------------------->
+    <div id="show_td" class="w3-panel w3-teal inv w3-margin">
+        <h3 class="w3-margin">Tesouro Direto:</h3>
+        <div class="w3-panel w3-light-gray">
+
+        <div class="w3-row-padding">
+            <div class="w3-col s3">
+                <canvas id="pie_chart_td" width="300" height="300"></canvas>
+            </div>
+                <div class="w3-col s9">
+                    <button onclick="utils.accordions('show_add_td')" class="w3-btn w3-block w3-teal w3-left-align w3-margin-top">Adicionar/Editar</button>
+                    <div id="show_add_td" class="w3-container w3-hide">
+                        <form class="w3-container" onsubmit ="return false">
+                            <input id="id_td" class="w3-hide" type="text">
+
+                            <table class="w3-table">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>Quantidade</th>
+                                <th>Valor</th>
+                            </tr>
+                            <tr>
+                                <td><input id="name_td" class="w3-input w3-border" type="text"></td>
+                                <td><input id="num_td" class="w3-input w3-border" type="text"></td>
+                                <td><input id="val_td" class="w3-input w3-border" type="text"></td>
+                            </tr>
+                            </table>
+
+                            <button id="add_td" class="w3-button w3-teal w3-margin-bottom">Salvar</button>
+                            <button id="clear_td" class="w3-button w3-teal w3-margin-bottom">Limpar</button>
+                        </form>
+                    </div>
+
+                    <table id= "td" class="w3-table-all w3-hoverable w3-centered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-------------------------------------------------------------------------------------------------------->
+    <div id="show_poup" class="w3-panel w3-teal inv w3-margin">
+        <h3 class="w3-margin">Poupanca:</h3>
+        <div class="w3-panel w3-light-gray">
+
+            <div class="w3-row-padding">
+                <div class="w3-col s3">
+                    <canvas id="pie_chart_poup" width="300" height="300"></canvas>
+                </div>
+                <div class="w3-col s9">
+                    <button onclick="utils.accordions('show_add_poup')" class="w3-btn w3-block w3-teal w3-left-align w3-margin-top">Adicionar/Editar</button>
+                    <div id="show_add_poup" class="w3-container w3-hide">
+                        <form class="w3-container" onsubmit ="return false">
+                            <input id="id_poup" class="w3-hide" type="text">
+
+                            <table class="w3-table">
+                            <tr>
+                                <th>Codigo</th>
+                                <th class="w3-hide">Quantidade</th>
+                                <th>Valor</th>
+                            </tr>
+                            <tr>
+                                <td><input id="name_poup" class="w3-input w3-border" type="text"></td>
+                                <td><input id="num_poup" class="w3-hide" type="text"></td>
+                                <td><input id="val_poup" class="w3-input w3-border" type="text"></td>
+                            </tr>
+                            </table>
+
+                            <button id="add_poup" class="w3-button w3-teal w3-margin-bottom">Salvar</button>
+                            <button id="clear_poup" class="w3-button w3-teal w3-margin-bottom">Limpar</button>
+                        </form>
+                    </div>
+                    <table id= "poup" class="w3-table-all w3-hoverable w3-centered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-------------------------------------------------------------------------------------------------------->
+    <div id="show_cc" class="w3-panel w3-teal inv w3-margin">
+        <h3 class="w3-margin">Conta Corrente:</h3>
+        <div class="w3-panel w3-light-gray">
+
+            <div class="w3-row-padding">
+                <div class="w3-col s3">
+                    <canvas id="pie_chart_cc" width="300" height="300"></canvas>
+                </div>
+                <div class="w3-col s9">
+                    <button onclick="utils.accordions('show_add_cc')" class="w3-btn w3-block w3-teal w3-left-align w3-margin-top">Adicionar/Editar</button>
+                    <div id="show_add_cc" class="w3-container w3-hide">
+                        <form class="w3-container" onsubmit ="return false">
+                            <input id="id_cc" class="w3-hide" type="text">
+
+                            <table class="w3-table">
+                            <tr>
+                                <th>Codigo</th>
+                                <th class="w3-hide">Quantidade</th>
+                                <th>Valor</th>
+                            </tr>
+                            <tr>
+                                <td><input id="name_cc" class="w3-input w3-border" type="text"></td>
+                                <td><input id="num_cc" class="w3-hide" type="text"></td>
+                                <td><input id="val_cc" class="w3-input w3-border" type="text"></td>
+                            </tr>
+                            </table>
+
+                            <button id="add_cc" class="w3-button w3-teal w3-margin-bottom">Salvar</button>
+                            <button id="clear_cc" class="w3-button w3-teal w3-margin-bottom">Limpar</button>
+                        </form>
+                    </div>
+
+                    <table id= "cc" class="w3-table-all w3-hoverable w3-centered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-------------------------------------------------------------------------------------------------------->
+    <div id="show_provento" class="w3-panel w3-teal inv w3-margin">
+        <h3 class="w3-margin">Proventos:</h3>
+        <div class="w3-panel w3-light-gray">
+
+            <div class="w3-row-padding">
+                <div class="w3-col s3">
+                    <canvas id="pie_chart_provento" width="300" height="300"></canvas>
+                </div>
+                <div class="w3-col s9">
+                    <button onclick="utils.accordions('show_add_provento')" class="w3-btn w3-block w3-teal w3-left-align w3-margin-top">Adicionar/Editar</button>
+                    <div id="show_add_provento" class="w3-container w3-hide">
+                        <form class="w3-container" onsubmit ="return false">
+                            <input id="id_provento" class="w3-hide" type="text">
+
+                            <table class="w3-table">
+                            <tr>
+                                <th>Codigo</th>
+                                <th class="w3-hide">Quantidade</th>
+                                <th>Valor</th>
+                            </tr>
+                            <tr>
+                                <td><input id="name_provento" class="w3-input w3-border" type="text"></td>
+                                <td><input id="num_provento" class="w3-hide" type="text"></td>
+                                <td><input id="val_provento" class="w3-input w3-border" type="text"></td>
+                            </tr>
+                            </table>
+
+                            <button id="add_provento" class="w3-button w3-teal w3-margin-bottom">Salvar</button>
+                            <button id="clear_provento" class="w3-button w3-teal w3-margin-bottom">Limpar</button>
+                        </form>
+                    </div>
+
+                    <table id= "provento" class="w3-table-all w3-hoverable w3-centered"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+<script src="front_side/app.js"></script>
+
+</html>

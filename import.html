@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Investimentos</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;">
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body style="background: rgb(231, 231, 231);">
+
+    <div class="w3-container w3-teal">
+        <h2>Importar Dados:</h2>
+    </div>
+    </br>
+
+    <input type="month" id="global_date" class="w3-margin" min="2010-01">
+
+    <div class="w3-bar w3-teal w3-margin-bottom w3-margin-top">
+        <button id="import_acoes" class="w3-bar-item w3-button w3-large" onclick="tab_ctrl(this.id, 'acoes')">Acoes</button>
+        <button id="import_fiis" class="w3-bar-item w3-button w3-large" onclick="tab_ctrl(this.id, 'fiis')">FIIs</button>
+        <button id="import_stocks" class="w3-bar-item w3-button w3-large" onclick="tab_ctrl(this.id, 'stocks')">Inv Exterior</button>
+        <button id="import_td" class="w3-bar-item w3-button w3-large" onclick="tab_ctrl(this.id, 'td')">Tesouro Direto</button>
+        <button id="import_provento" class="w3-bar-item w3-button w3-large" onclick="tab_ctrl(this.id, 'provento')">Proventos</button>
+    </div>
+
+    <div class="w3-panel w3-teal inv">
+        <h3 id="import_show" class="w3-margin">Importar:</h3>
+        <div class="w3-panel w3-light-gray">
+            <button id="import_valid" class="w3-button w3-teal w3-margin">Validar</button>
+            <button id="import_clear" class="w3-button w3-teal w3-margin">Limpar</button>
+            <textarea id="import_text" rows="10" style="resize:none; width:100%;"></textarea>
+        </div>
+        <h3 class="w3-margin">Resultado:</h3>
+        <div class="w3-panel w3-light-gray">
+            <button id="import" class="w3-button w3-teal w3-margin">Importar</button>
+            <table id= "import_table" class="w3-table-all w3-hoverable w3-centered"></table>
+        </div>
+    </div>
+
+</body>
+<script src="front_side/import.js"></script>
+</html>
