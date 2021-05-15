@@ -1,9 +1,19 @@
 var sqlite3 = require("sqlite3").verbose();
+var fs = require("fs");
+fs.writeFile("db.log", "", () => {});
+
 const server = require("./server");
+
+function DEBUG(data) {
+  fs.appendFileSync("db.log", data.toString() + "\n");
+}
 
 function init_db() {
   var db = new sqlite3.Database("mydb.db");
   db.serialize(function () {
+    db.run(
+      "CREATE TABLE if not exists carteira (data TEXT, acoes TEXT, fiis TEXT, stocks TEXT, td TEXT, poup TEXT, cc TEXT, provento TEXT)"
+    );
     db.run(
       "CREATE TABLE if not exists fiis (data TEXT, codigo TEXT, quantidade TEXT, valor TEXT)"
     );
@@ -25,16 +35,13 @@ function init_db() {
     db.run(
       "CREATE TABLE if not exists provento (data TEXT, codigo TEXT, quantidade TEXT, valor TEXT)"
     );
-    db.run(
-      "CREATE TABLE if not exists carteira (data TEXT, acoes TEXT, fiis TEXT, stocks TEXT, td TEXT, poup TEXT, cc TEXT, provento TEXT)"
-    );
     db.close();
   });
 }
 init_db();
 
 function update_wallet(arg) {
-  if (arg.type === "carteira") return;
+  if (arg.type === "carteira" || arg.data.length == 0) return;
 
   var db = new sqlite3.Database("mydb.db");
   db.serialize(function () {
@@ -48,10 +55,11 @@ function update_wallet(arg) {
       (err, row) => {
         if (err) return console.log(err);
 
-        if (row.length == 0 && arg.data.length != 0) {
+        if (row.length == 0) {
           var stmt = db.prepare(
             "INSERT INTO carteira (data, " + arg.type + ") VALUES(?, ?)"
           );
+          DEBUG(["INSERT INTO carteira", arg.type, arg.date, total.toFixed(2)]);
           stmt.run(arg.date, total.toFixed(2));
           stmt.finalize(function () {
             if (err) return console.log(err);
@@ -64,13 +72,19 @@ function update_wallet(arg) {
               " SET " +
               arg.type +
               "='" +
-              total +
+              total.toFixed(2) +
               "'" +
               " WHERE data='" +
               arg.date +
               "'",
             function (err) {
               if (err) return console.log(err);
+              DEBUG([
+                "UPDATE INTO carteira",
+                arg.type,
+                arg.date,
+                total.toFixed(2),
+              ]);
               db.close();
               server.assync_comunic({ msg: "get_data", type: "carteira" });
             }

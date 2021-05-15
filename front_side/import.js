@@ -43,17 +43,13 @@ function generateTable(table, data) {
   }
 }
 
-function import_clear() {
-  document.getElementById("import_text").value = "";
-}
-
 function valid_stocks(lines) {
   let data = [];
 
   for (item of lines) {
     let values = item.split("\t");
 
-    if (values.length == 0) continue;
+    if (values.length <= 1) continue;
 
     var regex = /^([a-zA-Z0-9]+)/;
     var match = regex.exec(values[0]);
@@ -77,7 +73,7 @@ function valid_td(lines) {
   for (item of lines) {
     let values = item.split("\t");
 
-    if (values.length == 0) continue;
+    if (values.length <= 1) continue;
 
     let valor = values[5].split(" ")[1];
     valor = valor.replace(".", "");
@@ -99,7 +95,7 @@ function valid_proventos(lines) {
   for (item of lines) {
     let values = item.split("\t");
 
-    if (values.length == 0) continue;
+    if (values.length <= 1) continue;
 
     let valor = values[6].split(" ")[1];
     valor = valor.replace(".", "");
@@ -127,22 +123,26 @@ function import_valid() {
   import_reset();
   let lines = document.getElementById("import_text").value.split(/\n/);
 
-  data = []; //global data array
+  gdata = []; //global data array
 
   if (import_type === "td") {
-    data = valid_td(lines);
+    gdata = valid_td(lines);
   } else if (import_type === "provento") {
-    data = valid_proventos(lines);
+    gdata = valid_proventos(lines);
   } else {
-    data = valid_stocks(lines);
+    gdata = valid_stocks(lines);
   }
 
+  if (gdata.length == 0) return;
+
   let table = document.getElementById("import_table");
-  generateTableHead(table, Object.keys(data[0]));
-  generateTable(table, data);
+  generateTableHead(table, Object.keys(gdata[0]));
+  generateTable(table, gdata);
 }
 
-function import_import() {
+function import_add() {
+  if (gdata.length == 0) return;
+
   import_clear();
   import_reset();
 
@@ -152,7 +152,7 @@ function import_import() {
     data: [],
   };
 
-  for (item of data) {
+  for (item of gdata) {
     msg.data.push({
       id: "",
       date: item.data,
@@ -165,13 +165,34 @@ function import_import() {
 }
 
 function send(msg) {
-  console.log("Cliente: ", msg);
-  ipcRenderer.send("async-message", msg);
+  console.log("Cliente1: ", msg);
+  if (msg.msg === "add_row") {
+    return new Promise((resolve) => {
+      ipcRenderer.once("add_row_reply", (_, arg) => {
+        console.log("add_row_reply", arg);
+        let get_msg = {
+          msg: "get_data",
+          date: document.getElementById("global_date").value,
+          type: arg.type,
+        };
+        ipcRenderer.send("async-message", get_msg);
+      });
+      ipcRenderer.send("async-message", msg);
+    });
+  }
   return false;
 }
 
+ipcRenderer.on("get_carteira", (event, msg) => {
+  alert("Carteira atualizada!");
+});
+
 function import_reset() {
   document.getElementById("import_table").innerHTML = "";
+}
+
+function import_clear() {
+  document.getElementById("import_text").value = "";
 }
 
 function load() {
@@ -183,8 +204,8 @@ function load() {
   var clear = document.getElementById("import_clear");
   clear.addEventListener("click", import_clear, false);
 
-  var imp = document.getElementById("import");
-  imp.addEventListener("click", import_import, false);
+  var imp = document.getElementById("import_add");
+  imp.addEventListener("click", import_add, false);
 }
 
 document.addEventListener("DOMContentLoaded", load, false);

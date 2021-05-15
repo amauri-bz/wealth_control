@@ -59,14 +59,24 @@ class Wallet {
       let row = table.insertRow();
       for (let key in element) {
         if (key === "id") continue;
+
         let cell = row.insertCell();
-        let value = element[key] != "null" ? element[key] : "0";
-        let num_value = parseFloat(value);
-        let text = document.createTextNode(num_value.toFixed(2).toString());
+        let value = element[key] != null ? element[key] : "0";
+
+        let text = "";
+        if (key != "data") {
+          let num_value = parseFloat(value);
+          text = document.createTextNode(num_value.toFixed(2).toString());
+        } else {
+          text = document.createTextNode(value);
+        }
+
         cell.appendChild(text);
 
-        if (key === "data" || key === "provento") continue;
-        total_val += parseFloat(value);
+        if (key != "data" && key != "provento") {
+          console.log("table", key, value);
+          total_val += parseFloat(value);
+        }
       }
       let text_total = document.createTextNode(total_val.toFixed(2).toString());
       let cell_total = row.insertCell();
@@ -177,22 +187,34 @@ class Wallet {
       data: [],
     };
     for (let key in elements.data) {
-      let fiis_val = parseFloat(elements.data[key].fiis);
-      let acoes_val = parseFloat(elements.data[key].acoes);
-      let stocks_val = parseFloat(elements.data[key].stocks);
-      let td_val = parseFloat(elements.data[key].td);
-      let poup_val = parseFloat(elements.data[key].poup);
-      let cc_val = parseFloat(elements.data[key].cc);
+      let fiis_val =
+        elements.data[key].fiis == null
+          ? 0
+          : parseFloat(elements.data[key].fiis);
+      let acoes_val =
+        elements.data[key].acoes == null
+          ? 0
+          : parseFloat(elements.data[key].acoes);
+      let stocks_val =
+        elements.data[key].stocks == null
+          ? 0
+          : parseFloat(elements.data[key].stocks);
+      let td_val =
+        elements.data[key].td == null ? 0 : parseFloat(elements.data[key].td);
+      let poup_val =
+        elements.data[key].poup == null
+          ? 0
+          : parseFloat(elements.data[key].poup);
+      let cc_val =
+        elements.data[key].cc == null ? 0 : parseFloat(elements.data[key].cc);
+      console.log(fiis_val, acoes_val, stocks_val, td_val, poup_val, cc_val);
 
       let total =
-        (isNaN(fiis_val) ? 0 : fiis_val.toFixed(2)) +
-        (isNaN(acoes_val) ? 0 : acoes_val.toFixed(2)) +
-        (isNaN(stocks_val) ? 0 : stocks_val.toFixed(2)) +
-        (isNaN(td_val) ? 0 : td_val.toFixed(2)) +
-        (isNaN(poup_val) ? 0 : poup_val.toFixed(2)) +
-        (isNaN(cc_val) ? 0 : cc_val.toFixed(2));
-      newDataset3.data.push(total.toString());
+        fiis_val + acoes_val + stocks_val + td_val + poup_val + cc_val;
+      console.log(total, total.toFixed(2));
+      newDataset3.data.push(total.toFixed(2));
     }
+    console.log("newDataset3", newDataset3);
     chart.data.datasets.push(newDataset3);
 
     //STOCKS
